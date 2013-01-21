@@ -1,35 +1,7 @@
 ﻿
-namespace MIPSSimulator.Hardware.CPU
+namespace MIPSSimulator.Hardware
 {
-    public enum Opcode
-    {
-        //Operaciones aritmetico-logicas:
-        TYPER_GENERAL = 0x00,
-        TYPEI_ADDINMEDIATE = 0x08,
-        TYPEI_ANDINMEDIATE = 0x0C,
-        TYPEI_ORINMEDIATE = 0x0D,
-        //Acceso a memoria:
-        TYPEI_LOADWORD = 0x23,
-        TYPEI_STOREWORD = 0x2B,
-        //Saltos:
-        TYPEJ_JUMP = 0x02,
-        TYPEJ_JUMPLINK = 0x03,
-        TYPEI_BRANCHEQUAL = 0x04,
-        TYPEI_BRANCHNOTEQUAL = 0x05
-    }
 
-    public struct ALIData
-    {
-        public int source;
-        public int destiny;
-        public int aux;
-
-    }
-
-    public enum REGISTER
-    {
-
-    }
 
     public class CPU
     {
@@ -74,6 +46,9 @@ namespace MIPSSimulator.Hardware.CPU
 
         // - El resto no se utilizan (Por ahora)
 
+        private bool _executing;
+        private bool _programLoaded;
+
         public CPU()
         {
             _registers = new int[REGBANKSIZE];
@@ -81,6 +56,8 @@ namespace MIPSSimulator.Hardware.CPU
             _rom = new int[MEMORYWORDS];
 
             _setupRegisters();
+
+            _executing = false;
         }
 
         private void _setupRegisters()
@@ -88,6 +65,9 @@ namespace MIPSSimulator.Hardware.CPU
             _registers[ZERO] = 0;
             _registers[PC] = DEFAULTPROGRAMENTRYPOINT;
             _registers[SP] = LASTADDRESS; // La pila avanza de abajo a arriba
+
+            for(int i = R0; i <= R15;++i)
+                _registers[i] = 0;
         }
 
         public bool LoadProgram(int[] program, int entryPoint = DEFAULTPROGRAMENTRYPOINT)
@@ -99,10 +79,19 @@ namespace MIPSSimulator.Hardware.CPU
 
                 _registers[PC] = entryPoint;
 
-                return true;
+                _programLoaded = true;
             }
             else
-                return false;
+                _programLoaded = false;
+
+            return _programLoaded;
+        }
+
+        public 
+
+        private void _executionLoop()
+        {
+
         }
     }
 }
